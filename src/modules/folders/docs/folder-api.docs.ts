@@ -1,11 +1,12 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import {
   FolderListResponse,
   FolderResponse,
   FolderSummaryResponse,
   PostListInFolderResponse,
 } from '../responses';
+import { GetPostQueryDto } from '@src/modules/posts/dto/find-in-folder.dto';
 
 export const CreateFolderDocs = applyDecorators(
   ApiOperation({

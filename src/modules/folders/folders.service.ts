@@ -1,35 +1,74 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MutateFolderDto } from './dto/mutate-folder.dto';
-import { Model, Types } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { Folder, Post } from '@src/infrastructure';
+import { Types } from 'mongoose';
+import { FolderWithCount } from './dto/folder-with-count.dto';
+import { FolderRepository } from './folders.repository';
+import { PostsRepository } from '../posts/posts.repository';
 import { FolderType } from '@src/infrastructure/database/types/folder-type.enum';
 
 @Injectable()
 export class FoldersService {
   constructor(
-    @InjectModel(Folder.name) private readonly folderModel: Model<Folder>,
-    @InjectModel(Post.name) private readonly postModel: Model<Post>,
+    private readonly folderRepository: FolderRepository,
+    private readonly postRepository: PostsRepository,
   ) {}
-  async create(userId: Types.ObjectId, createFolderDto: MutateFolderDto) {
-    const folder = await this.folderModel.create({
+
+  async create(userId: string, createFolderDto: MutateFolderDto) {
+    const folder = await this.folderRepository.create(
       userId,
-      name: createFolderDto.name,
-      type: FolderType.CUSTOM,
+      createFolderDto.name,
+      FolderType.CUSTOM,
+    );
+
+    return folder;
+  }
+
+  async findAll(userId: string): Promise<FolderWithCount[]> {
+    const folders = await this.folderRepository.findByUserId(userId);
+    const folderIds = folders.map((folder) => folder._id);
+
+    const posts = await this.postRepository.getPostCountByFolderIds(folderIds);
+
+    const foldersWithCounts = folders.map((folder) => {
+      const post = posts.find((post) => post._id.equals(folder._id));
+      return {
+        ...folder.toJSON(),
+        postCount: post?.count ?? 0,
+      } satisfies FolderWithCount;
+    });
+
+    return foldersWithCounts;
+  }
+
+  async findOne(userId: string, folderId: string) {
+    const folder = await this.folderRepository.findOneOrFail({
+      _id: folderId,
+      userId,
     });
 
     return folder;
   }
 
-  async findAll(userId: Types.ObjectId) {}
-
-  async findOne(userId: Types.ObjectId, folderId: string) {}
-
   async update(
-    userId: Types.ObjectId,
+    userId: string,
     folderId: string,
     updateFolderDto: MutateFolderDto,
-  ) {}
+  ) {
+    const folder = await this.folderRepository.findOneOrFail({
+      _id: folderId,
+      userId,
+    });
 
-  async remove(userID: Types.ObjectId, folderId: string) {}
+    folder.name = updateFolderDto.name;
+    await folder.save();
+  }
+
+  async remove(userId: string, folderId: string) {
+    const folder = await this.folderRepository.findOneOrFail({
+      userId,
+      _id: folderId,
+    });
+
+    await folder.deleteOne().exec();
+  }
 }

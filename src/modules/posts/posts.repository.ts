@@ -27,4 +27,39 @@ export class PostsRepository {
       throw new InternalServerErrorException('create post DB error');
     }
   }
+
+  async getPostCountByFolderIds(folderIds: Types.ObjectId[]) {
+    const posts = await this.postModel
+      .aggregate<{ _id: Types.ObjectId; count: number }>([
+        {
+          $match: {
+            folderId: { $in: folderIds },
+          },
+        },
+        {
+          $group: {
+            _id: '$folderId',
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .exec();
+
+    return posts;
+  }
+
+  async getCountByFolderId(folderId: string) {
+    const count = await this.postModel.countDocuments({ folderId });
+
+    return count;
+  }
+
+  async findByFolderId(folderId: string, offset: number, limit: number) {
+    const folders = await this.postModel
+      .find({ folderId })
+      .skip(offset)
+      .limit(limit);
+
+    return folders;
+  }
 }
