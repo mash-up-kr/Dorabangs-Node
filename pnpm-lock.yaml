@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@aws-sdk/client-lambda':
+        specifier: ^3.606.0
+        version: 3.606.0
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.3.9(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.1.14)(rxjs@7.8.1)

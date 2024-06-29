@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { FoldersModule } from './modules/folders/folders.module';
 import { LinksModule } from './modules/links/links.module';
 import { PostsModule } from './modules/posts/posts.module';
+import { AwsLambdaModule } from './infrastructure/aws-lambda/aws-lambda.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PostsModule } from './modules/posts/posts.module';
     FoldersModule,
     LinksModule,
     PostsModule,
+    AwsLambdaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

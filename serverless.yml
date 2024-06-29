@@ -29,9 +29,12 @@ functions:
           path: '{proxy+}'
           cors:
             origin: '*'
+  aiWorker:
+    handler: worker-dist/index.handler
 
 package:
   exclude:
     - '**/*'
   include:
     - 'dist/**'
+    - 'worker-dist/**'

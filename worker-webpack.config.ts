@@ -1,21 +1,12 @@
-import CopyPlugin from 'copy-webpack-plugin';
 import * as path from 'path';
 import * as webpack from 'webpack';
-import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
-
-const swaggerUiModulePath = path.dirname(require.resolve('swagger-ui-dist'));
 
 module.exports = {
-  entry: './src/handler.ts',
+  entry: './src/ai_handler.ts',
   mode: 'none',
   target: 'node',
   devtool: 'source-map',
   plugins: [
-    // sentryWebpackPlugin({
-    //   org: 'mashup-linkit',
-    //   project: 'linkit-tracker',
-    //   authToken: process.env.SENTRY_AUTH_TOKEN,
-    // }),
     new webpack.IgnorePlugin({
       checkResource(resource) {
         const lazyImports = [
@@ -50,34 +41,6 @@ module.exports = {
         return false;
       },
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: `${swaggerUiModulePath}/swagger-ui.css`,
-          to: 'swagger-ui.css',
-        },
-        {
-          from: `${swaggerUiModulePath}/swagger-ui-bundle.js`,
-          to: 'swagger-ui-bundle.js',
-        },
-        {
-          from: `${swaggerUiModulePath}/swagger-ui-standalone-preset.js`,
-          to: 'swagger-ui-standalone-preset.js',
-        },
-        {
-          from: `${swaggerUiModulePath}/favicon-32x32.png`,
-          to: 'favicon-32x32.png',
-        },
-        {
-          from: `${swaggerUiModulePath}/favicon-16x16.png`,
-          to: 'favicon-16x16.png',
-        },
-        {
-          from: `${swaggerUiModulePath}/oauth2-redirect.html`,
-          to: 'src/oauth2-redirect.html',
-        },
-      ],
-    }),
   ],
   externals: {
     '@aws-sdk': '@aws-sdk',
@@ -89,7 +52,7 @@ module.exports = {
     },
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'worker-dist'),
     filename: 'index.js',
     libraryTarget: 'commonjs',
   },
