@@ -14,6 +14,7 @@ export class Post {
 
   @Prop({ required: true })
   title!: string;
+  //TODO : 사진 추가
 
   @Prop({ default: null, type: String })
   description: string | null;

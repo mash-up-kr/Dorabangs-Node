@@ -13,7 +13,7 @@ export class FolderSummaryResponse {
   type: FolderType;
 
   @ApiProperty()
-  createdAt: string;
+  createdAt: Date;
 
   constructor(data: FolderDocument) {
     this.id = data._id.toString();

@@ -16,7 +16,6 @@ export const GetUser = createParamDecorator(
   ): ReqUserPayload | ReqUserPayload[keyof ReqUserPayload] => {
     // Get context Request Object
     const request = context.switchToHttp().getRequest<Request>();
-
     // Expect Request, user property as type 'ReqUserPayload'(Refer to defined in common/types/type.d.ts)
     const user: Express.User = request.user;
     return user['id'];
