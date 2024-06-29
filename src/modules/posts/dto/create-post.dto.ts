@@ -1,14 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Types } from 'mongoose';
 
 export class CreatePostDto {
-  @IsString()
+  @IsMongoId()
   @IsNotEmpty()
   @ApiProperty({ description: '폴더 id', required: true })
   folderId: string;
 
-  @IsString()
+  @IsUrl()
   @IsNotEmpty()
   @ApiProperty({ description: '저장할 url', required: true })
   url: string;
